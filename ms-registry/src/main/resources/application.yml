@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ms-registry
+
+eureka:
+  client:
+    register-with-eureka: false
+    # open self-discovery
+    fetch-registry: false
+    service-url:
+      defaultZone: http://localhost:8080/eureka
