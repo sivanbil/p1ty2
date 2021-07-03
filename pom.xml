@@ -12,6 +12,8 @@
         <module>ms-registry</module>
         <module>ms-gateway</module>
         <module>ms-users</module>
+        <module>commons</module>
+        <module>ms-oauth2-server</module>
     </modules>
 
     <properties>
@@ -72,6 +74,7 @@
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
+                <version>8.0.17</version>
                 <scope>runtime</scope>
             </dependency>
 
