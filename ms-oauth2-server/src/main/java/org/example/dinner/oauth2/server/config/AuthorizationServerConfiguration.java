@@ -1,9 +1,11 @@
 package org.example.dinner.oauth2.server.config;
 
+import org.example.dinner.commons.model.domain.SignInIdentity;
 import org.example.dinner.oauth2.server.service.UserService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -12,6 +14,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
 import javax.annotation.Resource;
+import java.util.LinkedHashMap;
 
 @Configuration
 @EnableAuthorizationServer
@@ -72,6 +75,17 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.authenticationManager(authenticationManager)
                 .userDetailsService(userService)
-                .tokenStore(redisTokenStore);
+                .tokenStore(redisTokenStore)
+                .tokenEnhancer((accessToken, authentication) -> {
+                    // 获取
+                    SignInIdentity signInIdentity = (SignInIdentity) authentication.getPrincipal();
+                    DefaultOAuth2AccessToken token = (DefaultOAuth2AccessToken) accessToken;
+                    LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+                    map.put("nickname", signInIdentity.getNickname());
+                    map.put("avatar", signInIdentity.getAvatar());
+                    token.setAdditionalInformation(map);
+
+                    return token;
+                });
     }
 }
