@@ -1,7 +1,6 @@
 package org.example.dinner.commons.model.domain;
 
 import cn.hutool.core.util.StrUtil;
-import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,7 +17,7 @@ import java.util.stream.Stream;
 @Setter
 public class SignInIdentity implements UserDetails {
 
-    private Integer id;
+    private int id;
 
     private String username;
 
@@ -34,20 +33,19 @@ public class SignInIdentity implements UserDetails {
 
     private String roles;
 
-    private Integer isValid;
+    private int isValid;
 
-    private List<GrantedAuthority> authorityList;
+    private List<GrantedAuthority> authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (StrUtil.isNotBlank(this.roles)) {
-            this.authorityList = Lists.newArrayList();
-            this.authorityList = Stream.of(this.roles.split(","))
+            this.authorities = Stream.of(this.roles.split(","))
                     .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
         } else {
-            this.authorityList = AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER");
+            this.authorities = AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER");
         }
-        return authorityList;
+        return authorities;
     }
 
     @Override

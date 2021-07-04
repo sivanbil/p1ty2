@@ -1,9 +1,11 @@
 package org.example.dinner.oauth2.server.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.dinner.commons.model.domain.SignInIdentity;
 import org.example.dinner.commons.model.pojo.DinnerUser;
 import org.example.dinner.commons.utils.AssertUtil;
 import org.example.dinner.oauth2.server.mapper.UserMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,10 +33,10 @@ public class UserService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("用户名或密码错误，请重新输入");
         }
+        SignInIdentity signInIdentity = new SignInIdentity();
+        BeanUtils.copyProperties(user, signInIdentity);
         log.info(">>>>user, {}", user);
 
-        return new User(username,
-                user.getPassword(),
-                AuthorityUtils.commaSeparatedStringToAuthorityList(user.getRoles()));
+        return signInIdentity;
     }
 }

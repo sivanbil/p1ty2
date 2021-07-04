@@ -1,5 +1,6 @@
 package org.example.dinner.oauth2.server.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.dinner.commons.model.domain.SignInIdentity;
 import org.example.dinner.oauth2.server.service.UserService;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,7 @@ import java.util.LinkedHashMap;
 
 @Configuration
 @EnableAuthorizationServer
+@Slf4j
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
     @Resource
@@ -78,6 +80,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
                 .tokenStore(redisTokenStore)
                 .tokenEnhancer((accessToken, authentication) -> {
                     // 获取
+                    log.info(">>>>authentication:{}", authentication.getPrincipal());
                     SignInIdentity signInIdentity = (SignInIdentity) authentication.getPrincipal();
                     DefaultOAuth2AccessToken token = (DefaultOAuth2AccessToken) accessToken;
                     LinkedHashMap<String, Object> map = new LinkedHashMap<>();
